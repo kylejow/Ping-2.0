@@ -16,17 +16,17 @@ ax = fig.add_subplot(1, 1, 1)
 xs = []
 ys = []
 
-def animate(i, xs, ys):
-    xs.append(dt.datetime.now().strftime('%H:%M:%S.%f'))
-    ys.append(pingHost('8.8.8.8').rtt_max*1000)
+def animate(i, xs, ys, host, start):
+    xs.append(str(time.time() - start) + 's')
+    ys.append(pingHost(host).rtt_max*1000)
     xs = xs[-20:]
     ys = ys[-20:]
     ax.clear()
     ax.plot(xs, ys)
     plt.xticks(rotation=45, ha='right')
     plt.subplots_adjust(bottom=0.30)
-    plt.title('Ping')
+    plt.title('Pinging ' + host)
     plt.ylabel('Latency (ms)')
 
-ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=100)
+ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys, '8.8.8.8', time.time()), interval=100)
 plt.show()
