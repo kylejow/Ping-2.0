@@ -1,4 +1,5 @@
 #https://learn.sparkfun.com/tutorials/graph-sensor-data-with-python-and-matplotlib/update-a-graph-in-real-time
+#https://pypi.org/project/keyboard/
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -7,6 +8,7 @@ from pythonping import ping
 import threading
 import os
 import time
+import keyboard
 
 def pingHost(host):
     return ping(host, timeout = 2000, count = 1)
@@ -16,8 +18,9 @@ ax = fig.add_subplot(1, 1, 1)
 xs = []
 ys = []
 stop =False
+
 def interrupt():
-    time.sleep(3)
+    keyboard.wait('esc')
     global stop
     stop = True
 
@@ -34,12 +37,9 @@ def animate(i, xs, ys, host, start):
     plt.ylabel('Latency (ms)')
     if stop == True:
         plt.close()
+
 t1 = threading.Thread(target=interrupt)
 t1.start()
-
 ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys, '8.8.8.8', time.time()), interval=100)
 plt.show()
-
-
-
 t1.join()
